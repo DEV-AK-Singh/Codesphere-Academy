@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Code2, Database, Layout, Smartphone, Shield, Cloud } from 'lucide-react';
+import { Database, Layout, Smartphone, Shield, Cloud } from 'lucide-react';
 
 export interface Course {
   id: string;
