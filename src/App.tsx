@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import { Sun, Moon, Menu, X, Rocket, GraduationCap, Users, Briefcase, ChevronRight, Send, ArrowRight, MessageCircle, Layout } from 'lucide-react';
 import { COURSES, FEATURES, STATS, TESTIMONIALS } from './constants';
 
@@ -36,7 +36,7 @@ const GlassCard = ({ children, className = "", hoverEffect = true, isDarkMode = 
     `}
   >
     {/* Animated Border Glow Overlay */}
-    <div className={`absolute inset-0 bg-linear-to-r from-cyan-500/20 via-purple-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none blur-sm`} />
+    <div className={`absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none blur-sm`} />
     
     <div className="relative z-10">
       {children}
@@ -61,6 +61,12 @@ const Badge = ({ children, variant = "default", isDarkMode = true }: { children:
 export default function App() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [formStatus, setFormStatus] = useState<null | 'success' | 'error'>(null);
 
@@ -84,10 +90,21 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-500 relative overflow-hidden ${isDarkMode ? 'bg-slate-950 text-slate-200' : 'bg-slate-50 text-slate-900'}`}>
-      {/* Immersive Blurs */}
-      <div className={`absolute top-[-10%] left-[-10%] w-[40%] h-[40%] blur-[120px] rounded-full pointer-events-none ${isDarkMode ? 'bg-cyan-500/10' : 'bg-cyan-500/5'}`} />
-      <div className={`absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] blur-[120px] rounded-full pointer-events-none ${isDarkMode ? 'bg-purple-600/10' : 'bg-purple-600/5'}`} />
+    <div className={`min-h-screen flex flex-col transition-colors duration-500 relative overflow-x-hidden ${isDarkMode ? 'bg-slate-950 text-slate-200 selection:bg-cyan-500/30' : 'bg-slate-50 text-slate-900 selection:bg-cyan-200'}`}>
+      <style dangerouslySetInnerHTML={{ __html: `
+        body { background-color: ${isDarkMode ? '#020617' : '#f8fafc'}; }
+      `}} />
+      {/* Scroll Progress Bar */}
+      <motion.div
+        style={{ scaleX }}
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-400 via-purple-500 to-purple-600 z-[100] origin-left"
+      />
+
+      {/* Immersive Blurs - Contained to prevent overflow */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <div className={`absolute top-[-10%] left-[-10%] w-[40%] h-[40%] blur-[120px] rounded-full ${isDarkMode ? 'bg-cyan-500/10' : 'bg-cyan-500/5'}`} />
+        <div className={`absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] blur-[120px] rounded-full ${isDarkMode ? 'bg-purple-600/10' : 'bg-purple-600/5'}`} />
+      </div>
 
       {/* Background Dots */}
       <div className={`fixed inset-0 z-0 bg-immersive-dots pointer-events-none transition-opacity duration-1000 ${isDarkMode ? 'opacity-40 text-white/5' : 'opacity-10 text-slate-900/10'}`} />
@@ -95,7 +112,7 @@ export default function App() {
       {/* Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b px-4 md:px-8 py-4 flex justify-between items-center transition-colors duration-500 ${isDarkMode ? 'border-white/5 bg-slate-950/80' : 'border-slate-200 bg-white/80'}`}>
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-linear-to-tr from-cyan-400 to-purple-600 flex items-center justify-center">
+          <div className="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-gradient-to-tr from-cyan-400 to-purple-600 flex items-center justify-center">
             <Rocket className="text-white w-4 h-4 md:w-5 md:h-5" />
           </div>
           <span className={`text-base md:text-lg font-bold tracking-tight whitespace-nowrap ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
