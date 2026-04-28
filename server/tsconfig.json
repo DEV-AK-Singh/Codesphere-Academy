@@ -1,14 +1,15 @@
 {
-  "compilerOptions": { 
+  "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
-    "module": "nodenext",
-    "target": "esnext", 
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "esnext",
     "lib": ["esnext"],
-    "types": ["node"],  
+    "types": ["node"],
     "sourceMap": true,
     "declaration": true,
-    "declarationMap": true, 
+    "declarationMap": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     // Style Options
@@ -25,6 +26,14 @@
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
-    "skipLibCheck": true,
-  }
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "prisma/**/*"
+  ]
 }
