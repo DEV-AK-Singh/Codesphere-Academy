@@ -1,6 +1,7 @@
 import express from 'express'; 
 import dotenv from 'dotenv';
 import { logger } from './middlewares/logger.js';
+import UserRouter from './routes/user.routes.js';
 
 dotenv.config();
 
@@ -9,6 +10,8 @@ const port = process.env['PORT'];
 
 app.use(express.json());
 app.use(logger);
+
+app.use('/api/users', UserRouter);
 
 app.get('/health', (_req, res) => {
     const date = new Date();
