@@ -1,48 +1,51 @@
+import type { UserCreateInput, UserUpdateInput } from "../types/user.type";
 import { prisma } from "../utils/prisma";
 
+export const userSelection = {
+  id: true,
+  email: true,
+  phone: true,
+  username: true,
+  isActive: true,
+  role: true,
+  createdAt: true,
+  updatedAt: true,
+};
+
 export class UserService {
-  static async Register(
-    email: string,
-    phone: string,
-    username: string,
-    password: string,
-  ) {
-    const userExists = await prisma.user.findUnique({ where: { email } });
+  static async CreateUser(data: UserCreateInput) {
+    const userExists = await prisma.user.findUnique({ where: { email: data.email } });
     if (userExists) throw new Error("User already exists");
     const userCreated = await prisma.user.create({
-      data: { email, phone, username, password },
-      select: { id: true, email: true, phone: true, username: true },
+      data,
+      select: userSelection,
     });
     return userCreated;
   }
 
-  static async Login(email: string, password: string) {
-    const userExists = await prisma.user.findUnique({ where: { email } });
-    if (!userExists) throw new Error("User not found");
-    if (userExists.password !== password) throw new Error("Invalid password");
-    return userExists;
-  }
-
   static async GetUser(id: string) {
-    const userExists = await prisma.user.findUnique({ where: { id }, select: { id: true, email: true, phone: true, username: true } });
+    const userExists = await prisma.user.findUnique({
+      where: { id },
+      select: userSelection,
+    });
     if (!userExists) throw new Error("User not found");
     return userExists;
   }
 
   static async GetAllUsers() {
     const users = await prisma.user.findMany({
-      select: { id: true, email: true, phone: true, username: true },
+      select: userSelection,
     });
     return users;
   }
 
-  static async UpdateUser(id: string, data: any) {
+  static async UpdateUser(id: string, data: UserUpdateInput) {
     const userExists = await prisma.user.findUnique({ where: { id } });
     if (!userExists) throw new Error("User not found");
     const userUpdated = await prisma.user.update({
       where: { id },
       data,
-      select: { id: true, email: true, phone: true, username: true },
+      select: userSelection,
     });
     return userUpdated;
   }

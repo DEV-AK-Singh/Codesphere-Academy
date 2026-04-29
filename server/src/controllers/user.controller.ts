@@ -1,34 +1,18 @@
 import type { Request, Response } from "express";
 import { UserService } from "../services/user.service";
 
-export class UserController {
-    static async register(req: Request, res: Response) {
-        const { email, phone, username, password } = req.body;
-        if (!email || !phone || !username || !password) {
-            return res.status(400).json({ error: "Missing required fields" });
-        }
-        try {        
-            const user = await UserService.Register(email, phone, username, password);
+export class UserController {  
+    static async create(req: Request, res: Response) { 
+        const data = req.body;
+        try {
+            const user = await UserService.CreateUser(data);
             return res.status(201).json(user);
         } catch (error) {
             return res.status(400).json({ error: (error as Error).message });
         }
     }
 
-    static async login(req: Request, res: Response) {
-        const { email, password } = req.body;
-        if (!email || !password) {
-            return res.status(400).json({ error: "Missing required fields" });
-        }
-        try {
-            const user = await UserService.Login(email, password);
-            return res.status(200).json(user);
-        } catch (error) {
-            return res.status(400).json({ error: (error as Error).message });
-        }
-    }
-
-    static async getUser(req: Request, res: Response) {
+    static async get(req: Request, res: Response) {
         const { id } = req.params;
         if (!id) {
             return res.status(400).json({ error: "Missing required params" });
@@ -41,7 +25,7 @@ export class UserController {
         }    
     }
 
-    static async getAllUsers(_req: Request, res: Response) {
+    static async getAll(_req: Request, res: Response) {
         try {
             const users = await UserService.GetAllUsers();
             return res.status(200).json(users);
@@ -50,7 +34,7 @@ export class UserController {
         }
     }
 
-    static async updateUser(req: Request, res: Response) {
+    static async update(req: Request, res: Response) {
         const { id } = req.params;
         if (!id) {
             return res.status(400).json({ error: "Missing required params" });
@@ -64,7 +48,7 @@ export class UserController {
         }
     }
 
-    static async deleteUser(req: Request, res: Response) {
+    static async delete(req: Request, res: Response) {
         const { id } = req.params;
         if (!id) {
             return res.status(400).json({ error: "Missing required params" });
