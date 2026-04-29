@@ -56,4 +56,10 @@ export class UserService {
     const userDeleted = await prisma.user.delete({ where: { id } });
     return userDeleted;
   }
+
+  static async GetUserRole(id: string) {
+    const userExists = await prisma.user.findUnique({ where: { id } });
+    if (!userExists) throw new Error("User not found");
+    return userExists.role;
+  }
 }

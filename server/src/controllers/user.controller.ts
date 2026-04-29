@@ -3,6 +3,10 @@ import { UserService } from "../services/user.service";
 
 export class UserController {  
     static async create(req: Request, res: Response) { 
+        const userRole = await UserService.GetUserRole(req.user?.userId as string);
+        if (userRole !== "ADMIN") {
+            return res.status(403).json({ error: "Forbidden access!" });
+        }
         const data = req.body;
         try {
             const user = await UserService.CreateUser(data);
@@ -13,6 +17,10 @@ export class UserController {
     }
 
     static async get(req: Request, res: Response) {
+        const userRole = await UserService.GetUserRole(req.user?.userId as string);
+        if (userRole !== "ADMIN" && userRole !== "MODERATOR") {
+            return res.status(403).json({ error: "Forbidden access!" });
+        }
         const { id } = req.params;
         if (!id) {
             return res.status(400).json({ error: "Missing required params" });
@@ -25,7 +33,11 @@ export class UserController {
         }    
     }
 
-    static async getAll(_req: Request, res: Response) {
+    static async getAll(req: Request, res: Response) {
+        const userRole = await UserService.GetUserRole(req.user?.userId as string);
+        if (userRole !== "ADMIN" && userRole !== "MODERATOR") {
+            return res.status(403).json({ error: "Forbidden access!" });
+        }
         try {
             const users = await UserService.GetAllUsers();
             return res.status(200).json(users);
@@ -35,6 +47,10 @@ export class UserController {
     }
 
     static async update(req: Request, res: Response) {
+        const userRole = await UserService.GetUserRole(req.user?.userId as string);
+        if (userRole !== "ADMIN") {
+            return res.status(403).json({ error: "Forbidden access!" });
+        }
         const { id } = req.params;
         if (!id) {
             return res.status(400).json({ error: "Missing required params" });
@@ -49,6 +65,10 @@ export class UserController {
     }
 
     static async delete(req: Request, res: Response) {
+        const userRole = await UserService.GetUserRole(req.user?.userId as string);
+        if (userRole !== "ADMIN") {
+            return res.status(403).json({ error: "Forbidden access!" });
+        }
         const { id } = req.params;
         if (!id) {
             return res.status(400).json({ error: "Missing required params" });
