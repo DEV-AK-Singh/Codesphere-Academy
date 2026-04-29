@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
-import { AuthService } from "../services/auth.service";
-import type { TokenPayload } from "../types/user.type";
-import { verifyRefreshToken } from "../utils/jwt";
+import { AuthService } from "../services/auth.service.js";
+import type { TokenPayload } from "../types/user.type.js";
+import { verifyRefreshToken } from "../utils/jwt.js";
 
 export class AuthController {
   static async register(req: Request, res: Response) {
@@ -33,7 +33,7 @@ export class AuthController {
       return res.status(403).json({ error: "Invalid/Expired refresh token!" });
     };
     try {
-      const user = await AuthService.refreshToken(userId);
+      const user = await AuthService.RefreshToken(userId);
       return res.status(200).json(user);
     } catch (error) {
       console.log(error);
@@ -44,7 +44,7 @@ export class AuthController {
   static async me(req: Request, res: Response) {
     const { userId } = req.user as TokenPayload;
     try {
-      const user = await AuthService.me(userId);
+      const user = await AuthService.Me(userId);
       return res.status(200).json(user);
     } catch (error) {
       console.log(error);

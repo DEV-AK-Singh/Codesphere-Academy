@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import type { TokenPayload } from "../types/user.type";
+import type { TokenPayload } from "../types/user.type.js";
 
 const accessSecret = process.env["ACCESS_TOKEN_SECRET"];
 const accessSecretExpiry = process.env["ACCESS_TOKEN_EXPIRY"] || "15m";

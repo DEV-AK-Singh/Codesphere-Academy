@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
-import type { UserCreateInput } from "../types/user.type";
-import { prisma } from "../utils/prisma";
-import { generateAccessToken, generateRefreshToken } from "../utils/jwt";
-import { userSelection } from "./user.service";
+import { prisma } from "../utils/prisma.js";
+import type { UserCreateInput } from "../types/user.type.js";
+import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
+import { userSelection } from "./user.service.js";
 
 declare global {
   namespace Express {
@@ -41,7 +41,7 @@ export class AuthService {
     return { user: userUpdated, accessToken, refreshToken };
   } 
 
-  static async refreshToken(userId: string) {
+  static async RefreshToken(userId: string) {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new Error("User not found");
     const accessToken = generateAccessToken({ userId: user.id, email: user.email, username: user.username });
@@ -50,7 +50,7 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  static async me(userId: string) {
+  static async Me(userId: string) {
     const user = await prisma.user.findUnique({ where: { id: userId }, select: userSelection });
     if (!user) throw new Error("User not found");
     return user;

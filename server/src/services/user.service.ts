@@ -1,5 +1,5 @@
-import type { UserCreateInput, UserUpdateInput } from "../types/user.type";
-import { prisma } from "../utils/prisma";
+import { prisma } from "../utils/prisma.js";
+import type { UserCreateInput, UserUpdateInput } from "../types/user.type.js";
 
 export const userSelection = {
   id: true,
