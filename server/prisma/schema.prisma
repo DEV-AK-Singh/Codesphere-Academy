@@ -15,10 +15,12 @@ model User {
   username     String
   password     String
   role         Role     @default(USER)
-  isActive     Boolean  @default(true)
-  refreshToken String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  profileImage String?  @map("profile_image")
+  isActive     Boolean  @default(true) @map("is_active")
+  refreshToken String?  @map("refresh_token")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  files        File[]   @relation("UserFiles")
 
   @@index([email])
   @@map("users")
@@ -29,4 +31,22 @@ enum Role {
   ADMIN
   USER
   MODERATOR
+}
+
+// File model
+model File {
+  id           String   @id @default(uuid())
+  filename     String
+  originalName String   @map("original_name")
+  mimeType     String   @map("mime_type")
+  size         Int
+  path         String
+  url          String
+  userId       String   @map("user_id")
+  user         User     @relation("UserFiles", fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("files")
 }
