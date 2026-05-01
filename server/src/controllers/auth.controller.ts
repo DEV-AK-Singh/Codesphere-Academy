@@ -33,8 +33,8 @@ export class AuthController {
       return res.status(403).json({ error: "Invalid/Expired refresh token!" });
     };
     try {
-      const user = await AuthService.RefreshToken(userId);
-      return res.status(200).json(user);
+      const tokens = await AuthService.RefreshToken(userId);
+      return res.status(200).json({ accessToken: tokens.accessToken, refreshToken: tokens.refreshToken });
     } catch (error) {
       console.log(error);
       return res.status(400).json({ error: (error as Error).message });
